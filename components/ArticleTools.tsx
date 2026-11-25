@@ -22,6 +22,30 @@ export default function ArticleTools({
     }
   }
   const [notice, set] = useState('');
+  const [sending, setSending] = useState(false);
+  const [feedback, setFeedback] = useState('');
+  async function sendCorrection(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (sending) return;
+    const form = event.currentTarget;
+    const fields = new FormData(form);
+    setSending(true);
+    setFeedback('');
+    try {
+      const response = await fetch('/api/reader-tips', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'correction', article: id, quote: fields.get('quote'), details: fields.get('details') })
+      });
+      if (!response.ok) throw new Error('Submission failed');
+      form.reset();
+      setFeedback('আপনার সংশোধনের অনুরোধ নিউজরুমে পৌঁছেছে।');
+    } catch {
+      setFeedback('পাঠানো যায়নি। আবার চেষ্টা করুন।');
+    } finally {
+      setSending(false);
+    }
+  }
   useEffect(() => {
     void fetch('/api/views/' + id, {
       method: 'POST',
@@ -43,5 +67,14 @@ export default function ArticleTools({
     <span role="status">
       {notice}
     </span>
+    <details className="w-full">
+      <summary className="cursor-pointer">ভুল জানান</summary>
+      <form onSubmit={sendCorrection} className="form panel flow mt-3">
+        <label>সংশ্লিষ্ট বাক্য (ঐচ্ছিক)<textarea name="quote" rows={2} maxLength={800} /></label>
+        <label>কী সংশোধন করা দরকার?<textarea name="details" rows={3} required minLength={5} maxLength={2000} /></label>
+        <button type="submit" disabled={sending}>{sending ? 'পাঠানো হচ্ছে…' : 'নিউজরুমে পাঠান'}</button>
+        <p role="status">{feedback}</p>
+      </form>
+    </details>
   </div>;
 }

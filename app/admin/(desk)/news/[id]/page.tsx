@@ -1,3 +1,4 @@
+import geography from '@/public/reader/geography.json';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { admin } from '@/lib/auth';
@@ -47,8 +48,13 @@ export default async function Edit({
         <summary>পাঠক সংস্করণের তথ্য</summary>
         <input type="hidden" name="reader_details" value="1" />
         {readerFields.map(([key, label, maxLength]) => <label key={key}>{label}
-          <input name={key} maxLength={maxLength} defaultValue={details[0]?.reader_details[key]} />
+          <input name={key} maxLength={maxLength} defaultValue={details[0]?.reader_details[key]}
+            list={key === 'district' || key === 'country' ? key + '-choices' : undefined} />
         </label>)}
+        <datalist id="district-choices">{geography.flatMap(division => division.districts).map(district =>
+          <option key={district.id} value={district.id}>{district.bn} · {district.en}</option>)}</datalist>
+        <datalist id="country-choices">{['Malaysia', 'United Kingdom', 'Saudi Arabia', 'United Arab Emirates', 'Canada', 'Qatar', 'Singapore', 'Oman'].map(country =>
+          <option key={country} value={country} />)}</datalist>
       </details>}
       <Editor initial={s?.content || ''} />
       <label>প্রধান ছবি · JPG, PNG, WebP · সর্বোচ্চ ২ মেগাবাইট<input type="file" name="image" accept="image/jpeg,image/png,image/webp" />
