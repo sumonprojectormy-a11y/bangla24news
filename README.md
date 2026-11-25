@@ -68,3 +68,11 @@ Check **প্রকাশ করুন** to publish. Check **প্রধান
 ## Verification scope
 
 The included source passed a local optimized Next.js build with TypeScript and zero-warning ESLint. The production server was smoke-tested using HTTP fixtures for Supabase. Those checks included public routes, a percent-encoded Bengali article URL, missing stories, search, the breaking endpoint, social metadata, anonymous and non-editor access, and editor dashboard pages. Live database policies, real sign-in, uploads and deployment require your own Supabase and Vercel projects.
+
+### Reader edition
+
+The homepage serves the responsive reader edition in `public/reader`. Production articles load from Supabase through `/api/news` and open at their existing `/news/[slug]` URLs. The original server-rendered listings are available at `/archive`. Sample stories and photos are labeled in the reader edition.
+
+Run `supabase/reader-tips.sql` in the production Supabase SQL Editor to enable the reader-tip and correction forms. The API uses the existing server-only `SUPABASE_SERVICE_ROLE_KEY`. Editors can review submissions under `/admin/tips`.
+
+Run `supabase/reader-details.sql` to enable district, country, translations of headlines and summaries, and notice fields in the existing news editor. District and country tags also power My News and its RSS feed.

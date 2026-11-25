@@ -1,4 +1,5 @@
 'use server';
+import { readerFields } from '@/lib/reader-details';
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -127,11 +128,20 @@ export async function saveNews(id: string, revision: string, _: string, f: FormD
     };
     const current = id ? await editArticle(id, token) : undefined;
     if (id && String(current?.revision) !== revision) throw new InputError('সংবাদটি বদলে গেছে। রিফ্রেশ করুন।');
+    const details = Object.fromEntries(readerFields.map(([key, , limit]) => {
+      const text = String(f.get(key) ?? '').trim();
+      if (text.length > limit) throw new InputError('পাঠক সংস্করণের তথ্যের দৈর্ঘ্য যাচাই করুন।');
+      return [key, text];
+    }).filter(([, text]) => text));
+    if (details.sourceUrl && !URL.canParse(details.sourceUrl)) throw new InputError('মূল সূত্রের সঠিক URL দিন।');
+    if (details.sourceUrl && !/^https?:\/\//i.test(details.sourceUrl)) throw new InputError('মূল সূত্রের HTTP বা HTTPS URL দিন।');
+    if (details.noticeDeadline && !/^\d{4}-\d{2}-\d{2}$/.test(details.noticeDeadline)) throw new InputError('সঠিক তারিখ লিখুন।');
     const file = f.get('image');
     if (file instanceof File && file.size) uploaded = await upload(file, token);
     const thumbnail = uploaded || (f.has('remove_image') ? null : current?.thumbnail || null);
     await mutate('news', id, revision, id ? 'PATCH' : 'POST', {
       ...data,
+      ...(f.has('reader_details') ? { reader_details: details } : {}),
       thumbnail
     }, token);
     if (current?.thumbnail && current.thumbnail !== thumbnail) await removeImage(current.thumbnail, token);

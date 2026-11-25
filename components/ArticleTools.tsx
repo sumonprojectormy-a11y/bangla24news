@@ -10,6 +10,17 @@ export default function ArticleTools({
   url: string;
   title: string;
 }) {
+  function saveArticle() {
+    try {
+      const stored = JSON.parse(localStorage.getItem('saved') || '[]');
+      const ids = new Set(Array.isArray(stored) ? stored : []);
+      ids.add(id);
+      localStorage.setItem('saved', JSON.stringify([...ids]));
+      set('পড়ার তালিকায় যোগ হয়েছে।');
+    } catch {
+      set('পড়ার তালিকা সংরক্ষণ করা যায়নি।');
+    }
+  }
   const [notice, set] = useState('');
   useEffect(() => {
     void fetch('/api/views/' + id, {
@@ -28,6 +39,7 @@ export default function ArticleTools({
         set(url);
       }
     }}>লিংক কপি</button>
+    <button type="button" className="quiet" onClick={saveArticle}>পড়ার তালিকায় রাখুন</button>
     <span role="status">
       {notice}
     </span>

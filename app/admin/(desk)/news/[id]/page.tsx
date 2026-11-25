@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { admin } from '@/lib/auth';
 import { photo } from '@/lib/backend';
+import { readerDetails, readerFields } from '@/lib/reader-details';
 import { categories, editArticle } from '@/lib/news';
 import { Form, Titles, Editor, DeleteForm } from '@/components/Forms';
 import { saveNews, deleteNews } from '@/app/admin/actions';
@@ -17,7 +18,11 @@ export default async function Edit({
       id
     } = await params;
   if (id !== 'new' && !/^[a-f0-9-]{36}$/i.test(id)) notFound();
-  const [cats, s] = await Promise.all([categories(), id === 'new' ? undefined : editArticle(id, token)]);
+  const [cats, s, details] = await Promise.all([
+    categories(),
+    id === 'new' ? undefined : editArticle(id, token),
+    readerDetails(id === 'new' ? { limit: '0' } : { id: 'eq.' + id }, token)
+  ]);
   if (id !== 'new' && !s) notFound();
   const key = s?.id || '',
     rev = String(s?.revision || '');
@@ -38,6 +43,13 @@ export default async function Edit({
       </label>
       <label>সারসংক্ষেপ<textarea required rows={3} maxLength={800} name="summary" defaultValue={s?.summary} />
       </label>
+      {details && <details>
+        <summary>পাঠক সংস্করণের তথ্য</summary>
+        <input type="hidden" name="reader_details" value="1" />
+        {readerFields.map(([key, label, maxLength]) => <label key={key}>{label}
+          <input name={key} maxLength={maxLength} defaultValue={details[0]?.reader_details[key]} />
+        </label>)}
+      </details>}
       <Editor initial={s?.content || ''} />
       <label>প্রধান ছবি · JPG, PNG, WebP · সর্বোচ্চ ২ মেগাবাইট<input type="file" name="image" accept="image/jpeg,image/png,image/webp" />
       </label>

@@ -20,6 +20,7 @@ export default async function Desk({
         <Link href="/admin">ড্যাশবোর্ড</Link>
         <Link href="/admin/news">সংবাদ</Link>
         <Link href="/admin/categories">বিভাগ</Link>
+        <Link href="/admin/tips">পাঠকের খবর</Link>
         <Link href="/">প্রচ্ছদ</Link>
         <form action={logout}>
           <button>বের হোন</button>

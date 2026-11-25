@@ -41,7 +41,8 @@ export const category = cache(async (slug: string) => (await rows<Category>('cat
   limit: '1'
 }))[0]);
 export const breaking = () => stories({
-  breaking: 'eq.true'
+  breaking: 'eq.true',
+  published: 'eq.true'
 }, 8);
 export const pageNumber = (v: string | undefined) => Math.min(100000, Math.max(1, Math.floor(Number(v) || 1)));
 export function search(term: string, limit: number, offset: number) {
