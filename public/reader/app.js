@@ -23,6 +23,12 @@ let newsroom = {articles:[], breaking:[], lead:null, live:{updates:[]}};
 let geography = [];
 const samples = [...demoStories,...fullDemoStories,...extraDemoStories];
 let stories = samples;
+// Do not promote the stock database setup rows into the reader's edition.
+function isSetupStory(story) {
+ return /^\/news\/demo-(national|politics|international|sports|entertainment|technology|economy)$/.test(story.path || '') &&
+        story.bn.startsWith('নমুনা প্রতিবেদন · ');
+}
+const hasCoverPhoto = story => Boolean(story && (story.image || story.photoUrl));
 let visibleLatest = 16;
 const safe = value => String(value ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const districtList = () => geography.flatMap(division=>division.districts);
@@ -114,7 +120,8 @@ function render(){
  const breakStories=selectedBreaking.length?selectedBreaking:[demoStories[0],demoStories[2],demoStories[3]];
  ticker%=breakStories.length;
  const breaking=breakStories[ticker];
- const lead=stories.find(s=>s.id===newsroom.lead)||stories[0];
+ const featured=stories.find(s=>s.id===newsroom.lead);
+ const lead=hasCoverPhoto(featured)?featured:stories.find(hasCoverPhoto);
  const tickerLabel=selectedBreaking.length?t('ব্রেকিং','Breaking'):t('নমুনা শিরোনাম','Sample headline');
  const tickerHtml=`<div class="ticker"><strong>${tickerLabel}</strong><a href="${url(breaking)}">${title(breaking)}</a><button id="prev" aria-label="Previous headline">‹</button><button id="next" aria-label="Next headline">›</button></div>`;
  const label=`<p class="meta">${t('নমুনা সংস্করণ · প্রদর্শনীর জন্য সংবাদ ও চিত্র','Demo edition · Sample stories and illustrative images')}</p>`;
@@ -241,6 +248,7 @@ async function loadNews(){
   const result=await fetch('/api/news');
   if(!result.ok)return;
   const next=await result.json();
+  next.articles=next.articles.filter(story=>!isSetupStory(story));
   if(JSON.stringify(next)===JSON.stringify(newsroom))return;
   newsroom=next;
   stories=[...newsroom.articles,...samples];
