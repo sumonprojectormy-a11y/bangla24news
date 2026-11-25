@@ -150,12 +150,19 @@ function render(){
 
  }else if(route==='live'){
   const key=location.pathname.startsWith('/live/')?location.pathname.split('/').pop():null;
-  const demo={id:'sample',status:'ended',title:t('নমুনা লাইভ: একটি পাঠচক্রের দিন','Sample timeline: a community reading day'),summary:t('এই নমুনায় পাঠচক্রের প্রস্তুতি ও আলোচনা সময়ক্রমে দেখানো হয়েছে।','This sample follows a reading circle from opening to discussion.'),updates:[{time:'2026-11-24T09:30:00+06:00',text:t('পাঠকেরা তাঁদের পছন্দের বই নিয়ে আলোচনা শুরু করেন।','Readers begin discussing their book selections.')},{time:'2026-11-24T09:00:00+06:00',text:t('বই সাজানো ও পাঠক পরিচিতির মাধ্যমে আসর শুরু।','The session opens with introductions and a book display.')}]};
-  const current=newsroom.live.title?newsroom.live:demo;
-  const live=key==='sample'?demo:!key||key===(current.id||'first')?current:(newsroom.liveArchive||[]).find(item=>item.id===key);
-  if(!live){html=sectionTitle(t('কভারেজ পাওয়া যায়নি','Coverage unavailable'))}else{
-  html=`${sectionTitle(name('live'))}<div class="panel"><span class="badge">${live.status==='live'?t('লাইভ','Live'):t('লাইভ শেষ','Ended')}</span><h1>${safe(live.title)||t('লাইভ কভারেজ','Live coverage')}</h1>${live.title?`<a class="text-link" href="/live/${safe(live.id||'first')}">${t('স্থায়ী লিংক','Permanent link')}</a>`: ''}${live.summary?`<h2>${t('এখন পর্যন্ত যা জানা গেছে','What we know so far')}</h2>`: ''}${paragraphs(live.summary)}<ol class="timeline">${live.updates.map(update=>`<li><time>${when(update.time)}</time>${paragraphs(update.text)}</li>`).join('')}</ol>${live.updates.length?'':`<p>${t('এখন কোনো লাইভ আপডেট নেই।','There are no live updates right now.')}</p>`}</div>`;
-  html+=(newsroom.liveArchive||[]).map(item=>`<p><a href="/live/${safe(item.id)}">${safe(item.title)}</a></p>`).join('');}
+  const current = newsroom.live.title ? newsroom.live : null;
+  const archive = newsroom.liveArchive || [];
+  const live = key ? [current, ...archive].find(day => day?.id === key) : current;
+  html = sectionTitle(name('live'));
+  if (live) {
+    const updates = live.updates.map(update => `<li><time>${when(update.time)}</time><h3><a href="${safe(update.path)}">${safe(update.title)}</a></h3>${paragraphs(update.text)}</li>`).join('');
+    html += `<div class="panel"><span class="badge">${live.status === 'live' ? t('লাইভ', 'Live') : t('লাইভ শেষ', 'Ended')}</span>
+      <h1>${safe(live.title)}</h1><a class="text-link" href="/live/${safe(live.id)}">${t('স্থায়ী লিংক', 'Permanent link')}</a>
+      <ol class="timeline">${updates}</ol></div>`;
+  } else {
+    html += `<p class="panel">${key ? t('এই কভারেজটি পাওয়া যায়নি।', 'This coverage is unavailable.') : t('এই মুহূর্তে কোনো লাইভ আপডেট নেই।', 'There are no live updates right now.')}</p>`;
+  }
+  html += archive.map(day => `<p><a href="/live/${safe(day.id)}">${safe(day.id)} · ${safe(day.title)}</a></p>`).join('');
  }else if(route==='district'){
   const currentDistrict=districtList().find(d=>location.pathname==='/district/'+d.id);
   html=`${toolsNav()}${sectionTitle(currentDistrict?t(currentDistrict.bn,currentDistrict.en):name('district'))}${district()}<div id="district-results">${cards(stories.filter(s=>s.district))}</div>${label}`;
