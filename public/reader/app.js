@@ -125,6 +125,7 @@ function render(){
  const tickerLabel=selectedBreaking.length?t('ব্রেকিং','Breaking'):t('নমুনা শিরোনাম','Sample headline');
  const tickerHtml=`<div class="ticker"><strong>${tickerLabel}</strong><a href="${url(breaking)}">${title(breaking)}</a><button id="prev" aria-label="Previous headline">‹</button><button id="next" aria-label="Next headline">›</button></div>`;
  const label=`<p class="meta">${t('নমুনা সংস্করণ · প্রদর্শনীর জন্য সংবাদ ও চিত্র','Demo edition · Sample stories and illustrative images')}</p>`;
+ const originalFeatures=[{"bn":"নকশিকাঁথার গল্প ধরে রাখবেন যেভাবে","descBn":"পুরোনো কাঁথার নকশা চেনার পাশাপাশি যিনি ফোঁড় তুলেছিলেন, তাঁর কথাও লিখে রাখুন।","path":"/blog/nakshi-kantha-family-story.html","section":"guides","photoUrl":"/blog/kantha.webp"},{"bn":"পুরোনো পারিবারিক ছবি গোছাতে প্রথম দশটি ছবি বাছুন","descBn":"ছবির মানুষ, জায়গা আর সময়ের পরিচয় কীভাবে পরের প্রজন্মের জন্য রেখে দেবেন।","path":"/blog/family-photo-album.html","section":"guides","photoUrl":"/blog/album.webp"},{"bn":"ছোট ছাদে বাগান শুরু করুন দুই টবে","descBn":"পুদিনা আর ধনেপাতার জন্য জায়গা বাছা থেকে প্রথম সপ্তাহের পরিচর্যা।","path":"/blog/small-rooftop-herb-garden.html","section":"guides","photoUrl":"/blog/garden.webp"}];
  const cards=items=>`<div class="cards">${items.map(s=>card(s)).join('')}</div>`;
  let html;
  if(route==='home'){
@@ -132,7 +133,7 @@ function render(){
   const latest=stories.filter(s=>s!==lead&&!cover.includes(s)).slice(0,6);
   html=`${tickerHtml}${toolsNav()}<div class="grid front-page">${card(lead,true)}<div class="rail cover-rail">${cover.map(s=>card(s)).join('')}</div><aside class="rail latest"><div class="latest-tabs" role="group" aria-label="${t('খবরের তালিকা','News lists')}"><button id="latest-tab" aria-pressed="true">${name('latest')}</button><button id="picks-tab" aria-pressed="false">${t('বাছাই','Editor’s picks')}</button></div><div id="headline-feed">${feed(latest)}</div><a class="text-link" href="/#latest">${t('সব সংবাদ','All news')}</a></aside></div>${label}
   <section class="district-promo panel"><div><h2>${name('district')}</h2><p>${t('বিভাগ, জেলা ও উপজেলা ধরে স্থানীয় খবর পড়ুন।','Browse local stories by division, district and upazila.')}</p></div><a class="primary-link" href="/#district">${t('আমার জেলার খবর','Find my district')}</a></section>${followedDistrict(cards)}
-  <section class="desk-section guides-desk">${sectionTitle(t('ব্যাখ্যা ও গাইড','Explainers & guides'),'guides',t('সব গাইড','All guides'))}${cards([fullDemoStories[0],fullDemoStories[6],fullDemoStories[14],fullDemoStories[15]])}</section>
+  <section class="desk-section guides-desk">${sectionTitle(t('ব্যাখ্যা ও গাইড','Explainers & guides'),'guides',t('সব গাইড','All guides'))}${cards([...originalFeatures,fullDemoStories[0]])}</section>
   ${deskSections.map(section=>`<section class="desk-section">${sectionTitle(name(section),section)}${section==='diaspora'?diasporaNav():''}${cards(sectionStories(section).slice(0,4))}</section>`).join('')}
   <section class="photo-desk">${sectionTitle(t('ছবির পাতা','In pictures'),'photos',t('সব ছবি','All photos'))}${photoGrid(4)}</section>`;
   setTimeout(()=>{
@@ -149,7 +150,7 @@ function render(){
  }else if(route==='briefing'){html=briefingPage();
  }else if(route==='data-mode'){html=sectionTitle(t('কম ডেটা মোড','Low-data mode'))+`<label class="panel"><input id="lite" type="checkbox" ${localStorage.lowData==='on'?'checked':''}> ${t('ছোট ছবি ব্যবহার করুন','Use smaller news images')}</label>`;
  }else if(route==='guides'){
-  html=`${sectionTitle(t('ব্যাখ্যা ও গাইড','Explainers & guides'))}${label}${cards(fullDemoStories)}`;
+  html=`${sectionTitle(t('ব্যাখ্যা ও গাইড','Explainers & guides'))}${cards(originalFeatures)}${label}${cards(fullDemoStories)}`;
  }else if(route==='photos'){
   html=`${sectionTitle(t('ছবির পাতা','In pictures'))}${label}${photoGrid(galleryKeys.length)}`;
  }else if(route==='send-tip'){
