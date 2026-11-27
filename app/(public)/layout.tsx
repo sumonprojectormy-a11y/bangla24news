@@ -61,6 +61,7 @@ export default async function Layout({
           <Link href="/"><Image src="/reader/logo.png" width={230} height={48} alt="Bangla24 News" /></Link>
           <p>দেশের কথা, মানুষের কথা</p>
           <a href="https://www.facebook.com/share/14y1x6hrfQR/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">ফেসবুকে অনুসরণ করুন</a>
+          <a href="https://www.youtube.com/@Bangla24NewsDeskBD" target="_blank" rel="noopener noreferrer">ইউটিউব চ্যানেল</a>
         </section>
         <section><h2>সংবাদ</h2><Link href="/#latest">সর্বশেষ</Link><Link href="/archive">সংবাদ আর্কাইভ</Link><Link href="/#district">জেলার খবর</Link></section>
         <section><h2>পাঠকসেবা</h2><Link href="/#photos">ছবির পাতা</Link><Link href="/#saved">পড়ার তালিকা</Link><Link href="/#send-tip">খবর পাঠান</Link></section>
