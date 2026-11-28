@@ -76,3 +76,11 @@ The homepage serves the responsive reader edition in `public/reader`. Production
 Run `supabase/reader-tips.sql` in the production Supabase SQL Editor to enable the reader-tip and correction forms. The API uses the existing server-only `SUPABASE_SERVICE_ROLE_KEY`. Editors can review submissions under `/admin/tips`.
 
 Run `supabase/reader-details.sql` to enable district, country, translations of headlines and summaries, and notice fields in the existing news editor. District and country tags also power My News and its RSS feed.
+
+## Reader guides and the sitemap
+
+Publish reader guides as HTML in `public/blog/` with a single self-referencing
+canonical URL under `https://www.bangla24.news/blog/`. Keep drafts outside
+`public/`; use a robots noindex directive for public previews that should stay
+out of search. The standard `npm run build` command discovers published guides
+automatically. No sitemap list needs a separate edit.

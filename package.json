@@ -6,9 +6,12 @@
     "node": ">=22.13.0 <25"
   },
   "scripts": {
+    "predev": "node scripts/build-reader-guides.mjs",
     "dev": "next dev",
     "lint": "eslint . --max-warnings=0",
+    "pretypecheck": "node scripts/build-reader-guides.mjs",
     "typecheck": "next typegen && tsc --noEmit",
+    "prebuild": "node --test scripts/build-reader-guides.test.mjs && node scripts/build-reader-guides.mjs",
     "build": "npm run lint && next build --webpack",
     "start": "next start"
   },

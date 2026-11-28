@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { rows } from '@/lib/backend';
 import { categoryPath, newsPath } from '@/lib/format';
-import { readerGuidePaths } from '@/lib/reader-guides';
+import { readerGuidePaths } from '@/lib/reader-guides.generated';
 
 // Cache the completed sitemap while the shared backend client reads fresh rows.
 export const dynamic = 'force-static';
