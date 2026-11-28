@@ -111,7 +111,7 @@ function render(){
  const footerGroups=[
   [t('সংবাদ','News'),[['/#latest',name('latest')],['/#national',name('national')],['/#district',name('district')],['/#world',name('world')],['/#diaspora',name('diaspora')]]],
   [t('পাঠকসেবা','Reader tools'),[['/#live',name('live')],['/#photos',t('ছবির পাতা','In pictures')],['/#guides',t('ব্যাখ্যা ও গাইড','Explainers & guides')],['/#edition',t('ই-পেপার','E-paper')],['/#saved',t('পড়ার তালিকা','Reading list')]]],
-  [t('প্রকাশনা','Publication'),[['/archive',t('সংবাদ আর্কাইভ','News archive')],['/#send-tip',t('খবর পাঠান','Send a tip')],['/#about',t('আমাদের সম্পর্কে','About us')],['/admin',t('নিউজরুম','Newsroom')]]]
+  [t('প্রকাশনা','Publication'),[['/archive',t('সংবাদ আর্কাইভ','News archive')],['/#send-tip',t('খবর পাঠান','Send a tip')],['/about',t('আমাদের সম্পর্কে','About us')],['/contact',t('যোগাযোগ','Contact')],['/privacy-policy',t('গোপনীয়তা নীতি','Privacy policy')],['/admin',t('নিউজরুম','Newsroom')]]]
  ];
  $('footer-links').innerHTML=footerGroups.map(([heading,links])=>`<section aria-label="${heading}"><h2>${heading}</h2><ul>${links.map(([href,label])=>`<li><a href="${href}">${label}</a></li>`).join('')}</ul></section>`).join('');
  $('nav').setAttribute('aria-label',t('প্রধান বিভাগ','Main sections'));

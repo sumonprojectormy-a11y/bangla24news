@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { rows } from '@/lib/backend';
 import { categoryPath, newsPath } from '@/lib/format';
+import { readerGuidePaths } from '@/lib/reader-guides';
 
 // Cache the completed sitemap while the shared backend client reads fresh rows.
 export const dynamic = 'force-static';
@@ -24,6 +25,8 @@ async function sitemapEntries(table: 'news' | 'categories'): Promise<MetadataRou
     const page = await rows<SitemapRow>(table, params);
     if (page.length === 0) return entries;
     for (const row of page) {
+      // The legacy demo articles are published rows, but are not editorial stories.
+      if (table === 'news' && row.slug.startsWith('demo-')) continue;
       entries.push({ url: origin + path(row.slug), lastModified: row.updated_at });
     }
     // The server can return fewer rows than the requested limit.
@@ -33,5 +36,5 @@ async function sitemapEntries(table: 'news' | 'categories'): Promise<MetadataRou
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [posts, categories] = await Promise.all([sitemapEntries('news'), sitemapEntries('categories')]);
-  return [...staticPaths.map(path => ({ url: origin + path })), ...posts, ...categories];
+  return [...[...staticPaths, ...readerGuidePaths].map(path => ({ url: origin + path })), ...posts, ...categories];
 }

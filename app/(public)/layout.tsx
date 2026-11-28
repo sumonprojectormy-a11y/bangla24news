@@ -65,7 +65,7 @@ export default async function Layout({
         </section>
         <section><h2>সংবাদ</h2><Link href="/#latest">সর্বশেষ</Link><Link href="/archive">সংবাদ আর্কাইভ</Link><Link href="/#district">জেলার খবর</Link></section>
         <section><h2>পাঠকসেবা</h2><Link href="/#photos">ছবির পাতা</Link><Link href="/#saved">পড়ার তালিকা</Link><Link href="/#send-tip">খবর পাঠান</Link></section>
-        <section><h2>প্রকাশনা</h2><Link href="/#about">আমাদের সম্পর্কে</Link><Link href="/admin">নিউজরুম</Link><a href="#page-top">পাতার শুরুতে ফিরুন</a></section>
+        <section><h2>প্রকাশনা</h2><Link href="/about">আমাদের সম্পর্কে</Link><Link href="/contact">যোগাযোগ</Link><Link href="/privacy-policy">গোপনীয়তা নীতি</Link><Link href="/admin">নিউজরুম</Link><a href="#page-top">পাতার শুরুতে ফিরুন</a></section>
       </div>
     </footer>
     <PageTop />
